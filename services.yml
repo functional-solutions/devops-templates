@@ -1,0 +1,33 @@
+# File: templates/npm-with-params.yml
+
+parameters:
+  name: ''  # defaults for any parameters that aren't specified
+  project: ''
+  vmImage: ''
+  organization: ''
+  buildConfiguration: 'Release'
+  extension: 'fsproj'
+
+
+jobs:
+- job: ${{ parameters.name }}_API
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+  steps:
+  - task: UseDotNet@2
+    inputs:
+      packageType: 'sdk'
+      version: '3.1.100'
+  - script: dotnet build -c ${{ parameters.buildConfiguration }} ./src/${{ parameters.organization }}.${{ parameters.project }}/${{ parameters.project }}.${{ parameters.extension }}
+  - script: dotnet publish -c ${{ parameters.buildConfiguration }} -o "$(Build.BinariesDirectory)/${{ parameters.name }}" --version-suffix "-CI.$(Build.BuildNumber)" ./src/${{ parameters.organization }}.${{ parameters.project }}/${{ parameters.project }}.${{ parameters.extension }}
+  - task: ArchiveFiles@2
+    displayName: 'Archive API ${{parameters.name}}'
+    inputs:
+      rootFolderOrFile: '$(Build.BinariesDirectory)/${{ parameters.name }}'
+      includeRootFolder: false
+      archiveFile: '$(build.artifactstagingdirectory)/${{ parameters.name }}/${{ parameters.name }}.zip'
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: ${{ parameters.name }}'
+    inputs:
+      PathtoPublish: "$(build.artifactstagingdirectory)/${{ parameters.name }}"
+      ArtifactName: api

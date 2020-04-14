@@ -1,0 +1,31 @@
+# File: templates/npm-with-params.yml
+
+parameters:
+  name: ''  # defaults for any parameters that aren't specified
+  project: ''
+  vmImage: ''
+  organization: ''
+  packageName: ''
+  npmPackagename: ''
+
+
+jobs:
+- job: ${{ parameters.name }}_npm
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+  steps:
+  - task: YarnInstaller@2
+    inputs:
+      versionSpec: '1.x'
+      checkLatest: true
+  - script: yarn pack --cwd 'src/${{ parameters.organization }}.JavaScript.${{ parameters.project }}' '@${{parameters.organization}}/${{parameters.packageName}}'
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: 'src/${{ parameters.organization }}.JavaScript.${{ parameters.project }}'
+      Contents: '*.tgz'
+      TargetFolder: $(build.artifactstagingdirectory)
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: ${{ parameters.name }}'
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: npm_packages

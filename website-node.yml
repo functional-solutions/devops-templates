@@ -1,0 +1,33 @@
+# File: templates/npm-with-params.yml
+
+parameters:
+  name: ''  # defaults for any parameters that aren't specified
+  project: ''
+  organization: ''
+  vmImage: ''
+  buildConfiguration: 'Release'
+
+
+jobs:
+- job: website
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+  steps:  
+  - task: YarnInstaller@2
+    inputs:
+      versionSpec: '1.x'
+      checkLatest: true
+  - script: yarn --cwd 'src/${{ parameters.organization }}.${{ parameters.project }}' install
+  - script: yarn --cwd 'src/${{ parameters.organization }}.${{ parameters.project }}' build
+  - task: ArchiveFiles@2
+    displayName: 'Archive API ${{parameters.name}}'
+    inputs:
+      rootFolderOrFile: 'src/${{ parameters.organization }}.${{ parameters.project }}/dist'
+      includeRootFolder: false
+      archiveType: 'zip'
+      archiveFile: '$(build.artifactstagingdirectory)/${{ parameters.name }}/${{ parameters.name }}.zip'
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: ${{ parameters.name }}'
+    inputs:
+      PathtoPublish: "$(build.artifactstagingdirectory)/${{ parameters.name }}"
+      ArtifactName: website

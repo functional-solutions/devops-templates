@@ -1,0 +1,37 @@
+# File: templates/npm-with-params.yml
+
+parameters:
+  name: ''  # defaults for any parameters that aren't specified
+  project: ''
+  vmImage: ''
+  organization: ''
+  buildConfiguration: 'Release'
+  extension: 'fsproj'
+  dotnetVersion: ''
+
+jobs:
+- job: ${{ parameters.name }}_website
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+  steps:
+  - task: UseDotNet@2
+    inputs:
+      packageType: 'sdk'
+      version: ${{ parameters.dotnetVersion }}
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'publish'
+      publishWebProjects: true
+      feedsToUse: 'select'
+      arguments: '-c Release"'
+      versioningScheme: 'off'
+      workingDirectory: './src/${{ parameters.organization }}.${{ parameters.project }}'
+  
+  - powershell: mv ./src/${{ parameters.organization }}.${{ parameters.project }}/bin/Release/*/publish.zip  $env:outputdirectory/${{parameters.project}}.zip
+    env:
+      outputdirectory: $(build.artifactstagingdirectory)
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: ${{ parameters.name }}'
+    inputs:
+      PathtoPublish: '$(build.artifactstagingdirectory)/${{parameters.project}}.zip'
+      ArtifactName: website

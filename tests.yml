@@ -1,0 +1,22 @@
+# File: templates/npm-with-params.yml
+
+parameters:
+  name: ''  # defaults for any parameters that aren't specified
+  vmImage: ''
+
+
+jobs:
+  - job: UnitTests
+    displayName: Test.Unit
+    pool:
+      vmImage: ${{ parameters.vmImage }}
+    variables:
+      buildConfiguration: 'Debug'
+    steps:
+    - task: DotNetCoreCLI@2
+      displayName: Test
+      inputs:
+        command: test
+        projects: |
+         test/${{ parameters.name }}/*.fsproj
+        arguments: '--configuration debug'
