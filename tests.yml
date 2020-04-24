@@ -7,21 +7,21 @@ parameters:
   dotnetVersion: ''
 
 jobs:
-  - job: UnitTests
+  - job: ${{ parameters.name }}
     displayName: Test.Unit
     pool:
       vmImage: ${{ parameters.vmImage }}
     variables:
       buildConfiguration: 'Debug'
     steps:
-     - task: UseDotNet@2
-       inputs:
-         packageType: 'sdk'
-         version: ${{ parameters.dotnetVersion }}
-     - task: DotNetCoreCLI@2
-       displayName: Test
-        inputs:
-          command: test
-          projects: |
-           test/${{ parameters.name }}/*.${{ parameters.extension }}
-          arguments: '--configuration debug'
+    - task: UseDotNet@2
+      inputs:
+        packageType: 'sdk'
+        version: ${{ parameters.dotnetVersion }}
+    - task: DotNetCoreCLI@2
+      displayName: Test
+      inputs:
+        command: test
+        projects: |
+          test/${{ parameters.name }}/*.${{ parameters.extension }}
+        arguments: '--configuration debug'
