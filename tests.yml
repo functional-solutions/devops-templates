@@ -3,7 +3,8 @@
 parameters:
   name: ''  # defaults for any parameters that aren't specified
   vmImage: ''
-
+  extension: 'fsproj'
+  dotnetVersion: ''
 
 jobs:
   - job: UnitTests
@@ -13,10 +14,14 @@ jobs:
     variables:
       buildConfiguration: 'Debug'
     steps:
+     - task: UseDotNet@2
+       inputs:
+         packageType: 'sdk'
+         version: ${{ parameters.dotnetVersion }}
     - task: DotNetCoreCLI@2
       displayName: Test
       inputs:
         command: test
         projects: |
-         test/${{ parameters.name }}/*.fsproj
+         test/${{ parameters.name }}/*.${{ parameters.extension }}
         arguments: '--configuration debug'
