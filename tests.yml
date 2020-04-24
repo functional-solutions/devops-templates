@@ -5,23 +5,23 @@ parameters:
   vmImage: ''
   extension: 'fsproj'
   dotnetVersion: ''
-
+  
 jobs:
-  - job: ${{ parameters.name }}
+  - job: run_unit_test
     displayName: Test.Unit
     pool:
-      vmImage: ${{ parameters.vmImage }}
+      vmImage: ubuntu-latest
     variables:
       buildConfiguration: 'Debug'
     steps:
     - task: UseDotNet@2
       inputs:
         packageType: 'sdk'
-        version: ${{ parameters.dotnetVersion }}
+        version: 3.1.102
     - task: DotNetCoreCLI@2
       displayName: Test
       inputs:
         command: test
         projects: |
-          test/${{ parameters.name }}/*.${{ parameters.extension }}
+          test/RedRabbit.UnitTest/*.fsproj
         arguments: '--configuration debug'
