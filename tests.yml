@@ -17,11 +17,11 @@ jobs:
     - task: UseDotNet@2
       inputs:
         packageType: 'sdk'
-        version: 3.1.102
+        version: ${{ parameters.dotnetVersion }}
     - task: DotNetCoreCLI@2
       displayName: Test
       inputs:
         command: test
         projects: |
-          test/RedRabbit.UnitTest/*.fsproj
+          test/RedRabbit.UnitTest/*.${{ parameters.extension }}
         arguments: '--configuration debug'
