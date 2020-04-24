@@ -18,10 +18,10 @@ jobs:
        inputs:
          packageType: 'sdk'
          version: ${{ parameters.dotnetVersion }}
-    - task: DotNetCoreCLI@2
-      displayName: Test
-      inputs:
-        command: test
-        projects: |
-         test/${{ parameters.name }}/*.${{ parameters.extension }}
-        arguments: '--configuration debug'
+     - task: DotNetCoreCLI@2
+       displayName: Test
+        inputs:
+          command: test
+          projects: |
+           test/${{ parameters.name }}/*.${{ parameters.extension }}
+          arguments: '--configuration debug'
