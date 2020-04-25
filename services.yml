@@ -7,6 +7,7 @@ parameters:
   organization: ''
   buildConfiguration: 'Release'
   extension: 'fsproj'
+  dotnetVersion: ''
 
 
 jobs:
@@ -17,8 +18,8 @@ jobs:
   - task: UseDotNet@2
     inputs:
       packageType: 'sdk'
-      version: '3.1.100'
-  - script: dotnet build -c ${{ parameters.buildConfiguration }} ./src/${{ parameters.organization }}.${{ parameters.project }}/${{ parameters.project }}.${{ parameters.extension }}
+      version: ${{ parameters.dotnetVersion }}
+  #- script: dotnet build -c ${{ parameters.buildConfiguration }} ./src/${{ parameters.organization }}.${{ parameters.project }}/${{ parameters.project }}.${{ parameters.extension }}
   - script: dotnet publish -c ${{ parameters.buildConfiguration }} -o "$(Build.BinariesDirectory)/${{ parameters.name }}" --version-suffix "-CI.$(Build.BuildNumber)" ./src/${{ parameters.organization }}.${{ parameters.project }}/${{ parameters.project }}.${{ parameters.extension }}
   - task: ArchiveFiles@2
     displayName: 'Archive API ${{parameters.name}}'
