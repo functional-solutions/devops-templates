@@ -21,4 +21,4 @@ jobs:
         command: test
         projects: |
           test/${{ parameters.path }}/${{ parameters.project }}
-        arguments: '--configuration debug'
+        arguments: '--configuration debug --collect:"XPlat Code Coverage"'
