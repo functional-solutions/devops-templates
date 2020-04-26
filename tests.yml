@@ -15,10 +15,4 @@ jobs:
     variables:
       buildConfiguration: 'Debug'
     steps:
-    - task: DotNetCoreCLI@2
-      displayName: Test
-      inputs:
-        command: test
-        projects: |
-          test/${{ parameters.path }}/${{ parameters.project }}
-        arguments: '--configuration debug --collect:"XPlat Code Coverage"'
+    - script: dotnet test 'test/${{ parameters.path }}/${{ parameters.project }}' --configuration debug --collect:"XPlat Code Coverage"
