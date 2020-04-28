@@ -15,4 +15,14 @@ jobs:
     variables:
       buildConfiguration: 'Debug'
     steps:
-    - script: dotnet test 'test/${{ parameters.path }}/${{ parameters.project }}' --configuration debug --collect:"XPlat Code Coverage"
+      - task: DotNetCoreCLI@2
+        displayName: Test
+        inputs:
+          command: test
+          projects: |
+            test/RedRabbit.UnitTest/UnitTest.fsproj
+      - script: "dotnet test 'test/RedRabbit.UnitTest/UnitTest.fsproj' --configuration debug --collect:'XPlat Code Coverage'"
+      - task: PublishCodeCoverageResults@1
+        inputs:
+          codeCoverageTool: 'Cobertura'
+          summaryFileLocation: 'test/RedRabbit.UnitTest/TestResults/**/coverage.cobertura.xml'
