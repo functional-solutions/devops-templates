@@ -3,32 +3,25 @@
 parameters:
   name: ''  # defaults for any parameters that aren't specified
   project: ''
-  vmImage: ''
-  organization: ''
-  buildConfiguration: 'Release'
-  extension: 'fsproj'
-  dotnetVersion: ''
-
+  projectFolder: ''
 
 jobs:
-- job: ${{ parameters.name }}_API
-  pool:
-    vmImage: ${{ parameters.vmImage }}
+  - job: Build_${{ parameters.name }}
   steps:
-  - task: UseDotNet@2
-    inputs:
-      packageType: 'sdk'
-      version: ${{ parameters.dotnetVersion }}
-  #- script: dotnet build -c ${{ parameters.buildConfiguration }} ./src/${{ parameters.organization }}.${{ parameters.project }}/${{ parameters.project }}.${{ parameters.extension }}
-  - script: dotnet publish -c ${{ parameters.buildConfiguration }} -o "$(Build.BinariesDirectory)/${{ parameters.name }}" --version-suffix "-CI.$(Build.BuildNumber)" ./src/${{ parameters.organization }}.${{ parameters.project }}/${{ parameters.project }}.${{ parameters.extension }}
-  - task: ArchiveFiles@2
-    displayName: 'Archive API ${{parameters.name}}'
-    inputs:
-      rootFolderOrFile: '$(Build.BinariesDirectory)/${{ parameters.name }}'
-      includeRootFolder: false
-      archiveFile: '$(build.artifactstagingdirectory)/${{ parameters.name }}/${{ parameters.name }}.zip'
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish Artifact: ${{ parameters.name }}'
-    inputs:
-      PathtoPublish: "$(build.artifactstagingdirectory)/${{ parameters.name }}"
-      ArtifactName: api
+    - script: dotnet publish -c Release -o "$(Build.BinariesDirectory)/${{ parameters.name }}" --version-suffix "-CI.$(Build.BuildNumber)" ./src/${{ parameters.name }}/${{ parameters.projectFolder }}/${{ parameters.project }}
+    - task: ArchiveFiles@2
+      displayName: 'Archive API ${{ parameters.name }}'
+      inputs:
+        rootFolderOrFile: '$(Build.BinariesDirectory)/${{ parameters.name }}'
+        includeRootFolder: false
+        archiveFile: '$(build.artifactstagingdirectory)/api/${{ parameters.name }}.zip'
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(build.artifactstagingdirectory)/${{ parameters.name }}'
+        artifact: 'api'
+        publishLocation: 'pipeline'
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish ARM script'
+      inputs:
+        PathtoPublish: "$(build.SourcesDirectory)/build/${{ parameters.name }}.arm"
+        ArtifactName: build_script
