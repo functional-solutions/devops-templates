@@ -7,21 +7,21 @@ parameters:
 
 jobs:
   - job: Build_${{ parameters.name }}
-  steps:
-    - script: dotnet publish -c Release -o "$(Build.BinariesDirectory)/${{ parameters.name }}" --version-suffix "-CI.$(Build.BuildNumber)" ./src/${{ parameters.name }}/${{ parameters.path }}/${{ parameters.project }}
-    - task: ArchiveFiles@2
-      displayName: 'Archive API ${{ parameters.name }}'
-      inputs:
-        rootFolderOrFile: '$(Build.BinariesDirectory)/${{ parameters.name }}'
-        includeRootFolder: false
-        archiveFile: '$(build.artifactstagingdirectory)/api/${{ parameters.name }}.zip'
-    - task: PublishPipelineArtifact@1
-      inputs:
-        targetPath: '$(build.artifactstagingdirectory)/${{ parameters.name }}'
-        artifact: 'api'
-        publishLocation: 'pipeline'
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish ARM script'
-      inputs:
-        PathtoPublish: "$(build.SourcesDirectory)/build/${{ parameters.name }}.arm"
-        ArtifactName: build_script
+    steps:
+      - script: dotnet publish -c Release -o "$(Build.BinariesDirectory)/${{ parameters.name }}" --version-suffix "-CI.$(Build.BuildNumber)" ./src/${{ parameters.name }}/${{ parameters.path }}/${{ parameters.project }}
+      - task: ArchiveFiles@2
+        displayName: 'Archive API ${{ parameters.name }}'
+        inputs:
+          rootFolderOrFile: '$(Build.BinariesDirectory)/${{ parameters.name }}'
+          includeRootFolder: false
+          archiveFile: '$(build.artifactstagingdirectory)/api/${{ parameters.name }}.zip'
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(build.artifactstagingdirectory)/${{ parameters.name }}'
+          artifact: 'api'
+          publishLocation: 'pipeline'
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish ARM script'
+        inputs:
+          PathtoPublish: "$(build.SourcesDirectory)/build/${{ parameters.name }}.arm"
+          ArtifactName: build_script
