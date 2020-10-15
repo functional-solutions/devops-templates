@@ -3,12 +3,12 @@
 parameters:
   name: ''  # defaults for any parameters that aren't specified
   project: ''
-  projectFolder: ''
+  path: ''
 
 jobs:
   - job: Build_${{ parameters.name }}
   steps:
-    - script: dotnet publish -c Release -o "$(Build.BinariesDirectory)/${{ parameters.name }}" --version-suffix "-CI.$(Build.BuildNumber)" ./src/${{ parameters.name }}/${{ parameters.projectFolder }}/${{ parameters.project }}
+    - script: dotnet publish -c Release -o "$(Build.BinariesDirectory)/${{ parameters.name }}" --version-suffix "-CI.$(Build.BuildNumber)" ./src/${{ parameters.name }}/${{ parameters.path }}/${{ parameters.project }}
     - task: ArchiveFiles@2
       displayName: 'Archive API ${{ parameters.name }}'
       inputs:
