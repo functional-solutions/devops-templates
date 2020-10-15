@@ -17,7 +17,7 @@ jobs:
           archiveFile: '$(build.artifactstagingdirectory)/api/${{ parameters.name }}.zip'
       - task: PublishPipelineArtifact@1
         inputs:
-          targetPath: '$(build.artifactstagingdirectory)/${{ parameters.name }}'
+          targetPath: '$(build.artifactstagingdirectory)/api/${{ parameters.name }}.zip'
           artifact: 'api'
           publishLocation: 'pipeline'
       - task: PublishBuildArtifacts@1
