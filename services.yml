@@ -18,7 +18,7 @@ jobs:
       - task: PublishPipelineArtifact@1
         inputs:
           targetPath: '$(build.artifactstagingdirectory)/api/${{ parameters.name }}.zip'
-          artifact: 'api'
+          artifact: api_${{ parameters.name }}
           publishLocation: 'pipeline'
       - task: PublishBuildArtifacts@1
         displayName: 'Publish ARM script'
