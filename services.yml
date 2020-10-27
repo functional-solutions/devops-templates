@@ -15,10 +15,11 @@ jobs:
           rootFolderOrFile: '$(Build.BinariesDirectory)/${{ parameters.name }}'
           includeRootFolder: false
           archiveFile: '$(build.artifactstagingdirectory)/api/${{ parameters.name }}.zip'
-      - task: PublishPipelineArtifact@1
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish build results'
         inputs:
           targetPath: '$(build.artifactstagingdirectory)/api/${{ parameters.name }}.zip'
-          artifact: api_${{ parameters.name }}
+          artifact: api
           publishLocation: 'pipeline'
       - task: PublishBuildArtifacts@1
         displayName: 'Publish ARM script'
