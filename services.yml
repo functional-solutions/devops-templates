@@ -18,9 +18,8 @@ jobs:
       - task: PublishBuildArtifacts@1
         displayName: 'Publish build results'
         inputs:
-          targetPath: '$(build.artifactstagingdirectory)/api/${{ parameters.name }}.zip'
-          artifact: api
-          publishLocation: 'pipeline'
+          PathtoPublish: '$(build.artifactstagingdirectory)/api/${{ parameters.name }}.zip'
+          ArtifactName: api
       - task: PublishBuildArtifacts@1
         displayName: 'Publish ARM script'
         inputs:
